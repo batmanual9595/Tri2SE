@@ -2,21 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManagerScript
+public class GameManagerScript : MonoBehaviour
 {
-    FreelookCam cam;
+    public static GameManagerScript Instance { get; private set; }
+    public Transform cameraTransform;
 
-    public Quaternion camRotation{ get; set;}
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        cam = new FreelookCam();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Debug.Log(camRotation);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 }

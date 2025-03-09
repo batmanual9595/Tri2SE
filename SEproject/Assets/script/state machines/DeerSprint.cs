@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class DeerSprint : IDeerState
 {
     protected DeerStateMachine deer;
     private Rigidbody rb;
 
-    private float speed = 6f;
-    private float rotationSpeed = 100f;
-    private float jumpForce = 5f;
-    private float maxSpeed = 6f;
+    private Transform T;
+
+    private float speed = 4f;
+    private float rotationSpeed = 20f;
+    private float maxSpeed = 4f;
     
     public DeerSprint(DeerStateMachine deer){
         this.deer = deer;
         rb = deer.rb;
+        T = deer.t;
+        rb.useGravity = true;
     }
 
     public void handleGravity(){
@@ -23,18 +27,56 @@ public class DeerSprint : IDeerState
         }
     }
     public void handleForward(){
-        rb.velocity = new Vector3(deer.transform.forward.x * speed, rb.velocity.y, deer.transform.forward.z * speed);
+        Vector3 cameraForward = GetCameraForwardDirection();
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+        rb.AddForce(new Vector3(cameraForward.x, -0.2f, cameraForward.z)*speed , ForceMode.Impulse);
 
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
+        Quaternion targetRotation = Quaternion.LookRotation(cameraForward, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+    }
+    public void handleBack(){
+        Vector3 cameraForward = GetCameraForwardDirection();
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+        rb.AddForce(new Vector3(-cameraForward.x, -0.2f, -cameraForward.z)*speed , ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(-cameraForward, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
     public void handleLeft(){
-        deer.transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
+        Vector3 cameraRight = GetCameraRightDirection();
+        cameraRight.y = 0f;
+        cameraRight.Normalize();
+        rb.AddForce(new Vector3(cameraRight.x, -0.2f, cameraRight.z)*speed, ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(cameraRight, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
     public void handleRight(){
-        deer.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        Vector3 cameraRight = GetCameraRightDirection();
+        cameraRight.y = 0f;
+        cameraRight.Normalize();
+        rb.AddForce(new Vector3(-cameraRight.x, -0.2f, -cameraRight.z) * speed, ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(-cameraRight, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
     public void handleSpace(){
         deer.setState(new DeerJump(deer, speed));
@@ -44,5 +86,25 @@ public class DeerSprint : IDeerState
     }
     public void advanceState(){
         if(!Input.GetKey(KeyCode.LeftShift)) deer.setState(new DeerWalk(deer));
+    }
+
+    private Vector3 GetCameraForwardDirection()
+    {
+        CinemachineFreeLook freeLookCamera = GameManagerScript.Instance.cameraTransform.GetComponent<CinemachineFreeLook>();
+        
+        Vector3 lookAtPosition = freeLookCamera.LookAt.position;
+        Vector3 cameraPosition = freeLookCamera.transform.position;
+
+        return (lookAtPosition - cameraPosition).normalized;
+    }
+
+    private Vector3 GetCameraRightDirection()
+    {
+        CinemachineFreeLook freeLookCamera = GameManagerScript.Instance.cameraTransform.GetComponent<CinemachineFreeLook>();
+
+        Vector3 cameraForward = GetCameraForwardDirection();
+        Vector3 cameraRight = Vector3.Cross(cameraForward, Vector3.up);
+
+        return cameraRight.normalized;
     }
 }

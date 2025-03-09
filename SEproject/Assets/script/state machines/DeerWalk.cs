@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class DeerWalk : IDeerState
 {
@@ -10,7 +11,7 @@ public class DeerWalk : IDeerState
     private float speed = 2f;
     private float jumpForce = 5f;
     private float maxSpeed = 2f;
-    private float rotationSpeed = 100f;
+    private float rotationSpeed = 20f;
     
     public DeerWalk(DeerStateMachine deer){
         this.deer = deer;
@@ -24,19 +25,58 @@ public class DeerWalk : IDeerState
         // }
     }
     public void handleForward(){
-        rb.AddForce(deer.transform.forward * speed, ForceMode.Impulse);
+        Vector3 cameraForward = GetCameraForwardDirection();
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+        rb.AddForce(new Vector3(cameraForward.x, -0.2f, cameraForward.z)*speed , ForceMode.Impulse);
 
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
+        Quaternion targetRotation = Quaternion.LookRotation(cameraForward, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+    }
+    public void handleBack(){
+        Vector3 cameraForward = GetCameraForwardDirection();
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+        rb.AddForce(new Vector3(-cameraForward.x, -0.2f, -cameraForward.z)*speed , ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(-cameraForward, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
     public void handleLeft(){
-        deer.transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime);
+        Vector3 cameraRight = GetCameraRightDirection();
+        cameraRight.y = 0f;
+        cameraRight.Normalize();
+        rb.AddForce(new Vector3(cameraRight.x, -0.2f, cameraRight.z)*speed, ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(cameraRight, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
     public void handleRight(){
-        deer.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        Vector3 cameraRight = GetCameraRightDirection();
+        cameraRight.y = 0f;
+        cameraRight.Normalize();
+        rb.AddForce(new Vector3(-cameraRight.x, -0.2f, -cameraRight.z) * speed, ForceMode.Impulse);
+
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(-cameraRight, Vector3.up);
+        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
+    
     public void handleSpace(){
         deer.setState(new DeerJump(deer, speed));
     }
@@ -45,5 +85,25 @@ public class DeerWalk : IDeerState
     }
     public void advanceState(){
 
+    }
+
+    private Vector3 GetCameraForwardDirection()
+    {
+        CinemachineFreeLook freeLookCamera = GameManagerScript.Instance.cameraTransform.GetComponent<CinemachineFreeLook>();
+        
+        Vector3 lookAtPosition = freeLookCamera.LookAt.position;
+        Vector3 cameraPosition = freeLookCamera.transform.position;
+
+        return (lookAtPosition - cameraPosition).normalized;
+    }
+
+    private Vector3 GetCameraRightDirection()
+    {
+        CinemachineFreeLook freeLookCamera = GameManagerScript.Instance.cameraTransform.GetComponent<CinemachineFreeLook>();
+
+        Vector3 cameraForward = GetCameraForwardDirection();
+        Vector3 cameraRight = Vector3.Cross(cameraForward, Vector3.up);
+
+        return cameraRight.normalized;
     }
 }

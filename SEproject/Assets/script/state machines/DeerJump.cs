@@ -19,7 +19,7 @@ public class DeerJump : IDeerState
         this.deer = deer;
         rb = deer.rb;
         this.speed = speed;
-        raycastCooldown = 30;
+        raycastCooldown = 60;
         animator = deer.transform.Find("Deer_001").GetComponent<Animator>();
     }
 
@@ -45,6 +45,10 @@ public class DeerJump : IDeerState
     public void handleRight(){
         //can't turn
     }
+
+    public void handleBack(){
+        //can't walk
+    }
     public void handleSpace(){
         //can't jump again
     }
@@ -56,7 +60,7 @@ public class DeerJump : IDeerState
         if (Physics.Raycast(deer.transform.position, Vector3.down, out hit, 1.2f, groundLayer) && raycastCooldown <= 0)
         {
             if (speed == 2f) deer.setState(new DeerWalk(deer));
-            if (speed == 6f) deer.setState(new DeerSprint(deer));
+            if (speed == 4f) deer.setState(new DeerSprint(deer));
             Debug.DrawRay(deer.transform.position, Vector3.down * 1.2f, Color.yellow);
             animator.SetBool("airborne", false);
         }
