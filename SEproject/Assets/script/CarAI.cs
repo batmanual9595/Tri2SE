@@ -14,6 +14,7 @@ public class CarAI : MonoBehaviour, ICarObserver
 
     private Rigidbody rb;
     private bool dying;
+    private IDrivingStrat driveStrat;
 
     void Start()
     {
@@ -42,6 +43,10 @@ public class CarAI : MonoBehaviour, ICarObserver
             rb.AddForce(new Vector3(0, transform.forward.y * -0.01f, 0), ForceMode.Impulse);
         }
         
+    }
+
+    public void setDrivingStrat(IDrivingStrat drivingStrat){
+        driveStrat = drivingStrat;
     }
 
     public void onDeerKilled(){
