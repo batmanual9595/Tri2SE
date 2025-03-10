@@ -383,6 +383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 1154850458}
   carPrefab: {fileID: 5268106358219190627, guid: f848925eae6189b4585cb31c171de946, type: 3}
+  vanPrefab: {fileID: 5644824692078820689, guid: 7eb3cd597c0853241b94b1b987827783, type: 3}
   deer: {fileID: 928780205}
   spawnRadius: 20
   spawnInterval: 10
@@ -3340,7 +3341,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 437, y: 279}
+  m_AnchoredPosition: {x: 281, y: 187}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1754149593

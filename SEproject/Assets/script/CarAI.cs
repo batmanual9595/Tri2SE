@@ -23,7 +23,7 @@ public class CarAI : MonoBehaviour, ICarObserver
         if (deer != null){
             deer.RegisterObserver(this);
         }
-        explosion = GetComponent<ParticleSystem>();
+        explosion = transform.Find("explosion").GetComponent<ParticleSystem>();
     }
 
     void FixedUpdate()

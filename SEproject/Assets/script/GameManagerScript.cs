@@ -9,6 +9,7 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
     public Transform cameraTransform;
 
     public GameObject carPrefab;
+    public GameObject vanPrefab;
     public GameObject deer;
     public float spawnRadius = 20f;
     public float spawnInterval = 10f;
@@ -63,7 +64,14 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
             Mathf.Sin(randomAngle) * spawnRadius
         );
 
-        GameObject spawnedCar = Instantiate(carPrefab, spawnPosition, Quaternion.identity);
+        float random = Random.value;
+        GameObject spawnedCar;
+        if (random < 0.7){
+            spawnedCar = Instantiate(carPrefab, spawnPosition, Quaternion.identity);
+        }
+        else{
+            spawnedCar = Instantiate(vanPrefab, spawnPosition, Quaternion.identity);
+        }
 
         CarAI carAI = spawnedCar.GetComponent<CarAI>();
         if (carAI != null)
