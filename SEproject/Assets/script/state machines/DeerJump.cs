@@ -11,7 +11,7 @@ public class DeerJump : IDeerState
     private Animator animator;
 
     private float speed;
-    private float jumpForce = 60f;
+    private float jumpForce = 80f;
     private bool jumped=false;
     
     public DeerJump(DeerStateMachine deer, float speed){
