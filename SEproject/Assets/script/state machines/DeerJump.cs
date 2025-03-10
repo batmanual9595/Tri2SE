@@ -12,7 +12,6 @@ public class DeerJump : IDeerState
 
     private float speed;
     private float jumpForce = 60f;
-    private float maxSpeed = 6f;
     private bool jumped=false;
     
     public DeerJump(DeerStateMachine deer, float speed){

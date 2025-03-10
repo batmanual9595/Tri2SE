@@ -9,7 +9,6 @@ public class DeerWalk : IDeerState
     private Rigidbody rb;
 
     private float speed = 2f;
-    private float jumpForce = 5f;
     private float maxSpeed = 2f;
     private float rotationSpeed = 20f;
     

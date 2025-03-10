@@ -29,7 +29,7 @@ public class DeerStateMachine : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(rb.velocity.magnitude);
+        // Debug.Log(rb.velocity.magnitude);
         animator.SetFloat("speed", rb.velocity.magnitude);
         if (Input.GetKey(KeyCode.W)) deerState.handleForward();
         if (Input.GetKey(KeyCode.A)) deerState.handleLeft();
