@@ -6,7 +6,7 @@ public class CarAI : MonoBehaviour, ICarObserver
 {
     public Transform deerTarget;
     private float speed = 15f;
-    private float turnSpeed = 5f;
+    private float turnSpeed = 1f;
 
     private MeshRenderer[] meshes;
 
