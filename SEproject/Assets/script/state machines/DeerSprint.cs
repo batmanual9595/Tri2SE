@@ -8,17 +8,16 @@ public class DeerSprint : IDeerState
     protected DeerStateMachine deer;
     private Rigidbody rb;
 
-    private Transform T;
-
     private float speed = 4f;
     private float rotationSpeed = 20f;
     private float maxSpeed = 4f;
+    private quatFacade quat;
     
     public DeerSprint(DeerStateMachine deer){
         this.deer = deer;
         rb = deer.rb;
-        T = deer.t;
         rb.useGravity = true;
+        quat = new quatFacade();
     }
 
     public void handleGravity(){
@@ -36,8 +35,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(cameraForward, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleBack(){
         Vector3 cameraForward = GetCameraForwardDirection();
@@ -49,8 +47,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(-cameraForward, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(-cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleLeft(){
         Vector3 cameraRight = GetCameraRightDirection();
@@ -62,8 +59,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(cameraRight, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleRight(){
         Vector3 cameraRight = GetCameraRightDirection();
@@ -75,8 +71,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(-cameraRight, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(-cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleSpace(){
         deer.setState(new DeerJump(deer, speed));

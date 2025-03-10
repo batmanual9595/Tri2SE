@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Security.Cryptography;
 
 public class DeerWalk : IDeerState
 {
@@ -11,17 +12,17 @@ public class DeerWalk : IDeerState
     private float speed = 2f;
     private float maxSpeed = 2f;
     private float rotationSpeed = 20f;
+    private quatFacade quat;
     
     public DeerWalk(DeerStateMachine deer){
         this.deer = deer;
         rb = deer.rb;
         rb.useGravity = true;
+        quat = new quatFacade();
     }
 
     public void handleGravity(){
-        // if (!deer.IsGrounded){
-        //     rb.AddForce(deer.transform.up * -5, ForceMode.Acceleration);
-        // }
+        //uses rigidbody gravity instead
     }
     public void handleForward(){
         Vector3 cameraForward = GetCameraForwardDirection();
@@ -33,8 +34,9 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(cameraForward, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        rb.rotation = quat.smoothRotate(cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
+        
     }
     public void handleBack(){
         Vector3 cameraForward = GetCameraForwardDirection();
@@ -46,8 +48,8 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(-cameraForward, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        rb.rotation = quat.smoothRotate(-cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleLeft(){
         Vector3 cameraRight = GetCameraRightDirection();
@@ -59,8 +61,7 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(cameraRight, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     public void handleRight(){
         Vector3 cameraRight = GetCameraRightDirection();
@@ -72,8 +73,7 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        Quaternion targetRotation = Quaternion.LookRotation(-cameraRight, Vector3.up);
-        rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quat.smoothRotate(-cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
     }
     
     public void handleSpace(){
