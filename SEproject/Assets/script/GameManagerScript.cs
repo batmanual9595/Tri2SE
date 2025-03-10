@@ -1,16 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class GameManagerScript : MonoBehaviour
+public class GameManagerScript : MonoBehaviour, ICarObserver
 {
     public static GameManagerScript Instance { get; private set; }
     public Transform cameraTransform;
 
-    public GameObject carPrefab;  // The car prefab to spawn
-    public GameObject deer;       // The deer GameObject (drag it from the scene)
-    public float spawnRadius = 20f; // The radius around the deer to spawn cars
-    public float spawnInterval = 10f; // Time interval to spawn cars (in seconds)
+    public GameObject carPrefab;
+    public GameObject deer;
+    public float spawnRadius = 20f;
+    public float spawnInterval = 10f;
+    public GameObject gameOverPanel;
+
+    public TextMeshProUGUI scoreText;
+    private float score = 0f;
+    public float scoreIncreaseRate = 1f;
+
+    private bool isGameOver = false;
 
     private void Awake()
     {
@@ -20,16 +28,27 @@ public class GameManagerScript : MonoBehaviour
 
     void Start()
     {
-        // Start spawning cars every spawnInterval seconds
         StartCoroutine(SpawnCarsAtInterval());
+        ragdoll deer = FindObjectOfType<ragdoll>();
+        if (deer != null){
+            deer.RegisterObserver(this);
+        }
+        gameOverPanel.SetActive(false);
+    }
+
+    void Update(){
+        if (!isGameOver){
+            score += Time.deltaTime * scoreIncreaseRate;
+            scoreText.text = "Score: " + Mathf.FloorToInt(score);
+        }
     }
 
     IEnumerator SpawnCarsAtInterval()
     {
         while (true)
         {
-            SpawnCar();  // Spawn a car
-            yield return new WaitForSeconds(spawnInterval); // Wait for the specified interval before spawning the next car
+            SpawnCar();
+            yield return new WaitForSeconds(spawnInterval - score/10);
         }
     }
 
@@ -52,4 +71,24 @@ public class GameManagerScript : MonoBehaviour
             carAI.SetTarget(deer.transform);
         }
     }
+
+    public void onDeerKilled(){
+        if (isGameOver) return;
+        isGameOver = true;
+        StartCoroutine(delayedRestart());
+    }
+
+    private IEnumerator delayedRestart(){
+        yield return new WaitForSeconds(2f);
+        ShowGameOverPanel();
+    }
+
+    private void ShowGameOverPanel()
+    {
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+    }
+
 }

@@ -29,17 +29,19 @@ public class CarAI : MonoBehaviour, ICarObserver
     void FixedUpdate()
     {
         if (deerTarget == null) return;
-
-        Vector3 directionToDeer = deerTarget.position - transform.position;
-        directionToDeer.y = 0;
-
-
-        Quaternion targetRotation = Quaternion.LookRotation(directionToDeer);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        if (!dying){
+            Vector3 directionToDeer = deerTarget.position - transform.position;
+            directionToDeer.y = 0;
 
 
-        rb.AddForce(transform.forward * speed, ForceMode.Acceleration);
-        rb.AddForce(new Vector3(0, transform.forward.y * -0.01f, 0), ForceMode.Impulse);
+            Quaternion targetRotation = Quaternion.LookRotation(directionToDeer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+
+            rb.AddForce(transform.forward * speed, ForceMode.Acceleration);
+            rb.AddForce(new Vector3(0, transform.forward.y * -0.01f, 0), ForceMode.Impulse);
+        }
+        
     }
 
     public void onDeerKilled(){
@@ -54,9 +56,6 @@ public class CarAI : MonoBehaviour, ICarObserver
     private void die(){
         explosion.Play();
         dying = true;
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.isKinematic = true;
         foreach (MeshRenderer meshRenderer in meshes)
         {
             if (meshRenderer != null)
@@ -72,7 +71,7 @@ public class CarAI : MonoBehaviour, ICarObserver
 
     public void OnCollisionEnter(Collision c){
         if (c.gameObject.CompareTag("car")){
-            if (rb.velocity.magnitude > 7f) die();
+            if (rb.velocity.magnitude > 10f) die();
         }
     }
 }
