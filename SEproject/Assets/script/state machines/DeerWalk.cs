@@ -12,20 +12,19 @@ public class DeerWalk : IDeerState
     private float speed = 2f;
     private float maxSpeed = 2f;
     private float rotationSpeed = 20f;
-    private quatFacade quat;
 
     public DeerWalk(DeerStateMachine deer)
     {
         this.deer = deer;
         rb = deer.rb;
         rb.useGravity = true;
-        quat = new quatFacade();
     }
 
     public void handleGravity()
     {
         //uses rigidbody gravity instead
     }
+    
     public void handleForward()
     {
         Vector3 cameraForward = GetCameraForwardDirection();
@@ -38,7 +37,7 @@ public class DeerWalk : IDeerState
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
 
-        rb.rotation = quat.smoothRotate(cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
 
     }
     public void handleBack()
@@ -53,7 +52,7 @@ public class DeerWalk : IDeerState
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
 
-        rb.rotation = quat.smoothRotate(-cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleLeft()
     {
@@ -66,7 +65,7 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleRight()
     {
@@ -79,7 +78,7 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(-cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
 
     public void handleSpace()
