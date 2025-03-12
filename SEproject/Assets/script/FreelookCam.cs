@@ -10,12 +10,14 @@ public class FreelookCam : MonoBehaviour, ICarObserver
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         ragdoll deer = FindObjectOfType<ragdoll>();
-        if (deer != null){
+        if (deer != null)
+        {
             deer.RegisterObserver(this);
         }
     }
 
-    public void onDeerKilled(){
+    public void onDeerKilled()
+    {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }

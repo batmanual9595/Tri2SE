@@ -21,7 +21,8 @@ public class CarAI : MonoBehaviour, ICarObserver
         rb = GetComponent<Rigidbody>();
         meshes = GetComponentsInChildren<MeshRenderer>();
         ragdoll deer = FindObjectOfType<ragdoll>();
-        if (deer != null){
+        if (deer != null)
+        {
             deer.RegisterObserver(this);
         }
         explosion = transform.Find("explosion").GetComponent<ParticleSystem>();
@@ -30,7 +31,8 @@ public class CarAI : MonoBehaviour, ICarObserver
     void FixedUpdate()
     {
         if (deerTarget == null) return;
-        if (!dying){
+        if (!dying)
+        {
             Vector3 directionToDeer = deerTarget.position - transform.position;
             directionToDeer.y = 0;
 
@@ -42,14 +44,16 @@ public class CarAI : MonoBehaviour, ICarObserver
             rb.AddForce(transform.forward * speed, ForceMode.Acceleration);
             rb.AddForce(new Vector3(0, transform.forward.y * -0.01f, 0), ForceMode.Impulse);
         }
-        
+
     }
 
-    public void setDrivingStrat(IDrivingStrat drivingStrat){
+    public void setDrivingStrat(IDrivingStrat drivingStrat)
+    {
         driveStrat = drivingStrat;
     }
 
-    public void onDeerKilled(){
+    public void onDeerKilled()
+    {
         if (!dying) die();
     }
 
@@ -58,7 +62,8 @@ public class CarAI : MonoBehaviour, ICarObserver
         deerTarget = deerTransform;
     }
 
-    private void die(){
+    private void die()
+    {
         explosion.Play();
         dying = true;
         foreach (MeshRenderer meshRenderer in meshes)
@@ -74,8 +79,10 @@ public class CarAI : MonoBehaviour, ICarObserver
         Destroy(this.gameObject, explosion.main.duration);
     }
 
-    public void OnCollisionEnter(Collision c){
-        if (c.gameObject.CompareTag("car")){
+    public void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.CompareTag("car"))
+        {
             if (rb.velocity.magnitude > 10f) die();
         }
     }
