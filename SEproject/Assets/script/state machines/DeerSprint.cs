@@ -18,7 +18,6 @@ public class DeerSprint : IDeerState
         this.deer = deer;
         rb = deer.rb;
         rb.useGravity = true;
-        quat = new quatFacade();
     }
 
     public void handleGravity()
@@ -39,7 +38,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleBack()
     {
@@ -52,7 +51,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(-cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleLeft()
     {
@@ -65,7 +64,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleRight()
     {
@@ -78,7 +77,7 @@ public class DeerSprint : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(-cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
     public void handleSpace()
     {
