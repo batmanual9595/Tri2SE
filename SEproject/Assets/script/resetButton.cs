@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class resetButton : MonoBehaviour
 {
-    public void restart(){
+    public void restart()
+    {
         SceneManager.LoadScene("MainGame");
     }
 }

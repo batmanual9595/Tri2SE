@@ -12,9 +12,10 @@ public class DeerJump : IDeerState
 
     private float speed;
     private float jumpForce = 80f;
-    private bool jumped=false;
-    
-    public DeerJump(DeerStateMachine deer, float speed){
+    private bool jumped = false;
+
+    public DeerJump(DeerStateMachine deer, float speed)
+    {
         this.deer = deer;
         rb = deer.rb;
         this.speed = speed;
@@ -22,14 +23,17 @@ public class DeerJump : IDeerState
         animator = deer.transform.Find("Deer_001").GetComponent<Animator>();
     }
 
-    public void handleGravity(){
-        if (!jumped){
-            rb.AddForce(deer.transform.up*jumpForce, ForceMode.Impulse);
-            rb.AddForce(deer.transform.forward*speed, ForceMode.Impulse);
+    public void handleGravity()
+    {
+        if (!jumped)
+        {
+            rb.AddForce(deer.transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(deer.transform.forward * speed, ForceMode.Impulse);
             jumped = true;
         }
     }
-    public void handleForward(){
+    public void handleForward()
+    {
         // rb.AddForce(deer.transform.forward*100, ForceMode.Impulse);
         // rb.velocity = new Vector3(deer.transform.forward.x * speed, rb.velocity.y, deer.transform.forward.z * speed);
 
@@ -38,23 +42,29 @@ public class DeerJump : IDeerState
         //     rb.velocity = rb.velocity.normalized * 2*maxSpeed;
         // }
     }
-    public void handleLeft(){
+    public void handleLeft()
+    {
         // can't turn
     }
-    public void handleRight(){
+    public void handleRight()
+    {
         //can't turn
     }
 
-    public void handleBack(){
+    public void handleBack()
+    {
         //can't walk
     }
-    public void handleSpace(){
+    public void handleSpace()
+    {
         //can't jump again
     }
-    public void handleShift(){
+    public void handleShift()
+    {
         //no need to sprint when already sprinting
     }
-    public void advanceState(){
+    public void advanceState()
+    {
         RaycastHit hit;
         if (Physics.Raycast(deer.transform.position, Vector3.down, out hit, 1.2f, groundLayer) && raycastCooldown <= 0)
         {

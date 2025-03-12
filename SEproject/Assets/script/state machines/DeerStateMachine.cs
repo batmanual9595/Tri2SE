@@ -10,7 +10,7 @@ public class DeerStateMachine : MonoBehaviour
 
     public Transform t;
 
-    public bool IsGrounded {get; set;} = true;
+    public bool IsGrounded { get; set; } = true;
 
     private Animator animator;
     private GameManagerScript gameManager;
@@ -23,7 +23,8 @@ public class DeerStateMachine : MonoBehaviour
         animator = transform.Find("Deer_001").GetComponent<Animator>();
         gameManager = new GameManagerScript();
     }
-    public void setState(IDeerState d){
+    public void setState(IDeerState d)
+    {
         deerState = d;
     }
 
@@ -36,11 +37,13 @@ public class DeerStateMachine : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) deerState.handleRight();
         if (Input.GetKey(KeyCode.S)) deerState.handleBack();
         if (Input.GetKey(KeyCode.Space)) deerState.handleSpace();
-        if (Input.GetKey(KeyCode.LeftShift)){
-           deerState.handleShift(); 
-           animator.SetBool("shift", true);
-        } 
-        else{
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            deerState.handleShift();
+            animator.SetBool("shift", true);
+        }
+        else
+        {
             animator.SetBool("shift", false);
         }
         // this.transform.rotation = gameManager.camRotation;
@@ -49,7 +52,8 @@ public class DeerStateMachine : MonoBehaviour
 
     }
 
-    void OnCollisionEnter(Collision c){
+    void OnCollisionEnter(Collision c)
+    {
         IsGrounded = true;
     }
 }

@@ -9,8 +9,8 @@ public class ragdoll : MonoBehaviour
 
     private Rigidbody rb;
     private Animator animator;
-    private Collider collider;
-    
+    private new Collider collider;
+
     public GameObject ragdollRootObject;
 
     private DeerStateMachine deerController;
@@ -28,30 +28,29 @@ public class ragdoll : MonoBehaviour
         setRagdoll(false, null, null);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void setRagdoll(bool state, Rigidbody carb, Collision co)
     {
-        
-    }
-
-    public void setRagdoll(bool state, Rigidbody carb, Collision co){
         rb.isKinematic = state;
         collider.enabled = !state;
         animator.enabled = !state;
         deerController.enabled = !state;
 
-        foreach (Collider c in colliders){
+        foreach (Collider c in colliders)
+        {
             c.enabled = state;
         }
 
-        foreach (Rigidbody r in rigidbodies){
+        foreach (Rigidbody r in rigidbodies)
+        {
             r.isKinematic = !state;
             if (co != null) r.AddForce(new Vector3(co.gameObject.transform.forward.x, 1f, co.gameObject.transform.forward.z) * carb.velocity.magnitude * 2f, ForceMode.Impulse);
         }
     }
 
-    public void OnCollisionEnter(Collision c){
-        if (c.gameObject.CompareTag("car")){
+    public void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.CompareTag("car"))
+        {
             Rigidbody carb = c.gameObject.GetComponent<Rigidbody>();
             NotifyDeerKilled();
             setRagdoll(true, carb, c);

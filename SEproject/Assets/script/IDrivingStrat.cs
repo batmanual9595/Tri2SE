@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDrivingStrat
 {
-    public virtual void swerve(){}
-    public virtual void drive(){}
-    public virtual void brake(){}
+    public virtual void swerve() { }
+    public virtual void drive() { }
+    public virtual void brake() { }
 }

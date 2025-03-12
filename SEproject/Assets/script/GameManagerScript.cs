@@ -31,14 +31,17 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
     {
         StartCoroutine(SpawnCarsAtInterval());
         ragdoll deer = FindObjectOfType<ragdoll>();
-        if (deer != null){
+        if (deer != null)
+        {
             deer.RegisterObserver(this);
         }
         gameOverPanel.SetActive(false);
     }
 
-    void Update(){
-        if (!isGameOver){
+    void Update()
+    {
+        if (!isGameOver)
+        {
             score += Time.deltaTime * scoreIncreaseRate;
             scoreText.text = "Score: " + Mathf.FloorToInt(score);
         }
@@ -49,7 +52,7 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
         while (true)
         {
             SpawnCar();
-            yield return new WaitForSeconds(spawnInterval - score/10);
+            yield return new WaitForSeconds(spawnInterval - score / 10);
         }
     }
 
@@ -66,10 +69,14 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
 
         float random = Random.value;
         GameObject spawnedCar;
-        if (random < 0.7){
+
+        if (random < 0.7)
+        {
             spawnedCar = Instantiate(carPrefab, spawnPosition, Quaternion.identity);
         }
-        else{
+
+        else
+        {
             spawnedCar = Instantiate(vanPrefab, spawnPosition, Quaternion.identity);
         }
 
@@ -80,13 +87,15 @@ public class GameManagerScript : MonoBehaviour, ICarObserver
         }
     }
 
-    public void onDeerKilled(){
+    public void onDeerKilled()
+    {
         if (isGameOver) return;
         isGameOver = true;
         StartCoroutine(delayedRestart());
     }
 
-    private IEnumerator delayedRestart(){
+    private IEnumerator delayedRestart()
+    {
         yield return new WaitForSeconds(2f);
         ShowGameOverPanel();
     }
