@@ -12,58 +12,63 @@ public class DeerWalk : IDeerState
     private float speed = 2f;
     private float maxSpeed = 2f;
     private float rotationSpeed = 20f;
-    private quatFacade quat;
-    
-    public DeerWalk(DeerStateMachine deer){
+
+    public DeerWalk(DeerStateMachine deer)
+    {
         this.deer = deer;
         rb = deer.rb;
         rb.useGravity = true;
-        quat = new quatFacade();
     }
 
-    public void handleGravity(){
+    public void handleGravity()
+    {
         //uses rigidbody gravity instead
     }
-    public void handleForward(){
+    
+    public void handleForward()
+    {
         Vector3 cameraForward = GetCameraForwardDirection();
         cameraForward.y = 0f;
         cameraForward.Normalize();
-        rb.AddForce(new Vector3(cameraForward.x, -0.2f, cameraForward.z)*speed , ForceMode.Impulse);
+        rb.AddForce(new Vector3(cameraForward.x, -0.2f, cameraForward.z) * speed, ForceMode.Impulse);
 
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
 
-        rb.rotation = quat.smoothRotate(cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
-        
+        rb.rotation = quatFacade.smoothRotate(cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
+
     }
-    public void handleBack(){
+    public void handleBack()
+    {
         Vector3 cameraForward = GetCameraForwardDirection();
         cameraForward.y = 0f;
         cameraForward.Normalize();
-        rb.AddForce(new Vector3(-cameraForward.x, -0.2f, -cameraForward.z)*speed , ForceMode.Impulse);
+        rb.AddForce(new Vector3(-cameraForward.x, -0.2f, -cameraForward.z) * speed, ForceMode.Impulse);
 
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
 
-        rb.rotation = quat.smoothRotate(-cameraForward, rb.rotation, rotationSpeed*Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraForward, rb.rotation, rotationSpeed * Time.deltaTime);
     }
-    public void handleLeft(){
+    public void handleLeft()
+    {
         Vector3 cameraRight = GetCameraRightDirection();
         cameraRight.y = 0f;
         cameraRight.Normalize();
-        rb.AddForce(new Vector3(cameraRight.x, -0.2f, cameraRight.z)*speed, ForceMode.Impulse);
+        rb.AddForce(new Vector3(cameraRight.x, -0.2f, cameraRight.z) * speed, ForceMode.Impulse);
 
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
-    public void handleRight(){
+    public void handleRight()
+    {
         Vector3 cameraRight = GetCameraRightDirection();
         cameraRight.y = 0f;
         cameraRight.Normalize();
@@ -73,23 +78,26 @@ public class DeerWalk : IDeerState
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
         }
-        rb.rotation = quat.smoothRotate(-cameraRight, rb.rotation, rotationSpeed*Time.deltaTime);
+        rb.rotation = quatFacade.smoothRotate(-cameraRight, rb.rotation, rotationSpeed * Time.deltaTime);
     }
-    
-    public void handleSpace(){
+
+    public void handleSpace()
+    {
         deer.setState(new DeerJump(deer, speed));
     }
-    public void handleShift(){
+    public void handleShift()
+    {
         deer.setState(new DeerSprint(deer));
     }
-    public void advanceState(){
+    public void advanceState()
+    {
 
     }
 
     private Vector3 GetCameraForwardDirection()
     {
         CinemachineFreeLook freeLookCamera = GameManagerScript.Instance.cameraTransform.GetComponent<CinemachineFreeLook>();
-        
+
         Vector3 lookAtPosition = freeLookCamera.LookAt.position;
         Vector3 cameraPosition = freeLookCamera.transform.position;
 
